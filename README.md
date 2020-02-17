@@ -1,1 +1,1 @@
-# 32-bit-Micro-MIPS-CPU
+# 32-bit MicroMIPS CPU
