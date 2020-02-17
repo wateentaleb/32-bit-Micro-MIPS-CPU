@@ -1,0 +1,70 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_signed.all;
+
+entity control_unit is
+port(op, fn : in std_logic_vector(5 downto 0); RegWrite,DataRead,DataWrite,ALUSrc,ADDSUB : out std_logic;
+ RegDest,BrType,RegInSrc,PCSrc,LogicFn,FnClass : out std_logic_vector(1 downto 0));
+end control_unit;
+
+architecture arch of control_unit is
+
+begin
+	process (op, fn)
+	begin
+		if (op = "000000") then RegDest <= "01";
+		else RegDest <= "00";
+		end if;
+		
+
+		if (op = "100011" ) then RegInSrc <= "00";
+		else RegInSrc <= "01";
+		end if;
+		
+		if (op = "000000") then ALuSrc <= '0';
+		else ALuSrc <= '1';
+		end if;
+		
+		if (op = "000000" and (fn = "100010" or fn = "101010")) or op = "001010" then ADDSUB <= '1';
+		else ADDSUB <= '0';
+		end if;
+		
+		if (op = "000000" and fn = "100111") then LogicFn <= "11";
+		elsif (op = "000000" and fn = "100110") or (op = "001110") then LogicFn<= "10";
+		elsif (op = "000000" and fn = "100101") or op = "001101" then LogicFn <= "01";
+		else LogicFn <= "00";
+		end if;
+
+		if (op = "001111") then FnClass <= "00";
+		elsif (op = "000000" and fn = "101010") or (op = "001010") then fnclass <= "01";
+		elsif (op = "000000" and (fn = "100000" or fn = "100010")) or op = "001000" or op = "100011" or op = "101011" then fnclass<="10";
+		else fnclass <= "11";
+		end if;
+
+		if op = "100011" then DataRead<= '1';
+		else DataRead <='0';
+		end if;
+
+		if op = "101011" then DataWrite<= '1';
+		else DataWrite <='0';
+		end if;
+
+		if (op = "000001") then Brtype <= "11";
+		elsif (op = "000100") then Brtype <= "01";
+		elsif (op = "000101") then Brtype <= "10";
+		else Brtype<= "00";
+		end if;
+
+		if (op = "000010") or (op = "000011") then Pcsrc <= "01";
+		elsif (op = "000000" and fn = "001000") then Pcsrc <= "10";
+		elsif (op = "000000" and fn = "001100") then pcsrc <= "11";
+		else pcsrc <= "00";
+		end if;
+
+		if ((op = "000000" and (fn = "001100" or fn = "001000")) or op = "000101" or op = "000100" or op = "000001" or op = "000010"
+		or op = "101011") then RegWrite <= '0';
+		else RegWrite <= '1';
+		end if;
+
+	end process;
+end arch;

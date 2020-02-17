@@ -1,0 +1,53 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+
+entity Instr_cache is
+  port(
+       ADDR: in unsigned(31 downto 0);
+       outp: out unsigned(31 downto 0));
+end Instr_cache;
+
+architecture Internal of Instr_cache is
+  type RAMtype is array (0 to 127) of unsigned(7 downto 0);
+  signal RAM1: RAMtype := (others => (others => '0'));
+begin
+
+-- or instruction (0) U (1) -> (2)
+RAM1(23) <= "00000000";
+RAM1(22) <= "00000001";
+RAM1(21) <= "00010000";
+RAM1(20) <= "00100101";
+
+-- lui imm & "0x0000" -> (2)
+RAM1(19) <= "00111111";
+RAM1(18) <= "11100010";
+RAM1(17) <= "11111111";
+RAM1(16) <= "11111111";
+
+-- beq (0) = (1) means PC = PC + 4*L
+RAM1(15) <= "00010000";
+RAM1(14) <= "00000001";
+RAM1(13) <= "00000000";
+RAM1(12) <= "00000001";
+
+-- store word (imm + (0)) ->(2)
+RAM1(11) <= "10101100";
+RAM1(10) <= "00000010";
+RAM1(9) <= "00010000";
+RAM1(8) <= "00100101";
+
+-- add instruction (0) + (1) -> (2)
+RAM1(7) <= "00000000";
+RAM1(6) <= "00000001";
+RAM1(5) <= "00010000";
+RAM1(4) <= "00100000";
+
+
+
+
+outp(7 downto 0) <= RAM1(to_integer(ADDR(6 downto 0)));
+outp(15 downto 8) <= RAM1(to_integer(ADDR(6 downto 0))+1);
+outp(23 downto 16) <= RAM1(to_integer(ADDR(6 downto 0))+2);
+outp(31 downto 24) <= RAM1(to_integer(ADDR(6 downto 0))+3); 
+end Internal;

@@ -1,0 +1,18 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+
+entity dataMUX is
+	port(dataCache, fromALU, IncrPC: in std_logic_vector(31 downto 0); RegInSrc : in std_logic_vector(1 downto 0); regFileIn : out std_logic_vector(31 downto 0));
+end dataMUX;
+
+architecture arch of dataMUX is
+begin
+	
+	with RegInSrc select regFileIn <=
+		dataCache when "00",
+		fromALU when "01",
+		IncrPC when "10",
+		"00000000000000000000000000000000" when "11";
+
+end arch;
