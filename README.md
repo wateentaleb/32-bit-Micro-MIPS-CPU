@@ -43,3 +43,24 @@ It consists of 128 memory locations, each location has 8 bits.
 **Input and Output Requirements:** 
 1. ADDR [31..0]: a write port which is a 32-bit input.(Since it only has 128 locations, only 7 LSB of ADDR[31..0] are used)
 2. Instruction [31..0]: a read port which is a 32-bit output.
+
+## Next-Address Block:
+This section is devoted to the design of the next-address block that is shown in the figure below. The output of this block is loaded into the program counter, it is derived in one of five ways mentioned below:
+<img width="1157" alt="next-address-table" src="https://user-images.githubusercontent.com/16707828/74690134-d7ccc480-51ab-11ea-86a3-26868ff7b813.png">
+**Next Address Architecture** 
+<img width="1105" alt="next-address-architecture" src="https://user-images.githubusercontent.com/16707828/74690157-eb782b00-51ab-11ea-84b5-e6f1b1a5abdf.png">
+
+**Input and Output Requirements:** 
+1. rt[31...0] and rs[31..0] : two input ports which go to Branch Condition Checker .
+2. PC[31..2]: is the upper 30 bits of program counter which is the part of PC that is modified by this block
+3. BrType [1..0]: the control input for Branch Condition checker (its operation table is shown below )
+4. BPCSrc [1..0]: the control input direct the multiplexer at the left edge of Fig 1 to send one of its 4 input to be written into the upper 30 bits of PC .
+5. NextPC[30..0]: an output to be written at the upper 30 bits of program counter which is part of PC. (The LSBs of the program counter are always set to 0)
+6. IncrPC[30..0]: an output to be (PC)31:2 + 1
+7. SE: is the sign extention block which convert Imm[15..0] to 30 bit signal.
+8. SysCallAddr: is a known constant associated with the location of an operating system routine.
+<img width="489" alt="brtable" src="https://user-images.githubusercontent.com/16707828/74690198-1b273300-51ac-11ea-94a3-e2292ca2fd12.png">
+
+## Control Unit 
+In this section,Control Unit of MicroMIPS CPU is designed using VHDL. The table below shows the inputs to the Control Unit and the corresponding outputs of control signals for each of the MicroMIPS instructions. 
+<img width="690" alt="control-unit-table" src="https://user-images.githubusercontent.com/16707828/74690265-6b9e9080-51ac-11ea-9b90-863384197d2a.png">
